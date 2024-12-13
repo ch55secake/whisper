@@ -1,2 +1,2 @@
 # whisper
->_ Terminal chat client built with websockets and bubbletea 
+> Terminal chat client built with websockets and bubbletea 
