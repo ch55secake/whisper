@@ -58,7 +58,7 @@ func (d messageItemDelegate) Render(w io.Writer, m list.Model, index int, listIt
 
 	var str string
 
-	str = fmt.Sprintf("%s: %s", head, i.content)
+	str = fmt.Sprintf("%s: %s - %s", head, i.content, i.at)
 
 	fn := ItemStyle.Render
 	if index == m.Index() {

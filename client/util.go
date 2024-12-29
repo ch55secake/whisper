@@ -1,6 +1,7 @@
 package client
 
 import (
+	"github.com/charmbracelet/bubbles/list"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -10,15 +11,22 @@ import (
 func StartClient() {
 	input := textinput.New()
 	input.Prompt = " > "
-	input.Placeholder = "Say something..."
 	input.Focus()
 	input.CharLimit = 256
-	input.PlaceholderStyle = lipgloss.NewStyle().Italic(true)
+
+	messagelist := list.New([]list.Item{}, messageItemDelegate{}, 0, 0)
+	messagelist.Styles = list.Styles{
+		NoItems: lipgloss.NewStyle().PaddingLeft(2).PaddingTop(2),
+	}
+	messagelist.SetShowHelp(false)
+	messagelist.SetShowTitle(false)
+	messagelist.SetShowStatusBar(false)
+	messagelist.SetShowFilter(false)
 
 	m := model{
-		input: input,
-		//messages: []string{},
-		username: "You",
+		input:    input,
+		messages: messagelist,
+		username: "skibidi",
 	}
 
 	p := tea.NewProgram(m, tea.WithAltScreen())
