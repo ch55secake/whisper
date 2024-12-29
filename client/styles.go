@@ -23,3 +23,13 @@ var InputBoxStyle = lipgloss.NewStyle().
 	MarginTop(1).
 	Border(lipgloss.RoundedBorder()).
 	BorderForeground(lipgloss.Color("62"))
+
+// ItemStyle style for each message sent
+var ItemStyle = lipgloss.NewStyle().
+	PaddingLeft(1).
+	Foreground(lipgloss.Color("#689d6a"))
+
+// SelectedItemStyle for each selected message
+var SelectedItemStyle = lipgloss.NewStyle().
+	PaddingLeft(1).
+	Foreground(lipgloss.Color("#fabd2f"))

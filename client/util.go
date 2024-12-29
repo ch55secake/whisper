@@ -16,8 +16,9 @@ func StartClient() {
 	input.PlaceholderStyle = lipgloss.NewStyle().Italic(true)
 
 	m := model{
-		input:    input,
-		messages: []string{},
+		input: input,
+		//messages: []string{},
+		username: "You",
 	}
 
 	p := tea.NewProgram(m, tea.WithAltScreen())

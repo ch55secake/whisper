@@ -17,7 +17,13 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "enter":
 			input := strings.TrimSpace(m.input.Value())
 			if input != "" {
-				m.messages = append(m.messages, input)
+				message := Message{
+					from:    m.username,
+					at:      time.Now().Format("15:04:05"),
+					content: input,
+				}
+
+				m.messages = append(m.messages, message)
 				m.input.SetValue("")
 			}
 		}
