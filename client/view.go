@@ -13,7 +13,7 @@ func (m model) View() string {
 
 	messagesView := MessageBoxStyle.Height(m.height - 6).Width(m.width).Render(m.messages.View())
 
-	inputView := InputBoxStyle.Height(m.height / 16).Width(m.width).Render(m.input.View())
+	inputView := InputBoxStyle.Height(m.height / 8).Width(m.width).Render(m.input.View())
 
 	return lipgloss.JoinVertical(lipgloss.Top, headerView, messagesView, inputView)
 }
