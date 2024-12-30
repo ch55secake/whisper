@@ -37,20 +37,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.height = msg.Height - h
 		m.width = msg.Width - v
 
-	case tickMsg:
-		m.currentTime = time.Now().Format("15:04:05")
-		return m, tickCmd()
 	}
 
 	var cmd tea.Cmd
 	m.input, cmd = m.input.Update(msg)
 	return m, cmd
-}
-
-type tickMsg struct{}
-
-func tickCmd() tea.Cmd {
-	return tea.Tick(time.Second, func(t time.Time) tea.Msg {
-		return tickMsg{}
-	})
 }

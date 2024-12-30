@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io"
 	"strings"
-	"time"
 
 	"github.com/charmbracelet/bubbles/list"
 	"github.com/charmbracelet/bubbles/textinput"
@@ -72,7 +71,6 @@ func (d messageItemDelegate) Render(w io.Writer, m list.Model, index int, listIt
 
 // Init create the model and return the relevant tea cmd, also sets the window title and ticks for the time
 func (m model) Init() tea.Cmd {
-	m.currentTime = time.Now().Format("15:04:05")
 	tea.SetWindowTitle("whisper")
-	return tea.Batch(textinput.Blink, tickCmd())
+	return nil
 }
