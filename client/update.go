@@ -25,8 +25,6 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				}
 
 				m.messages.InsertItem(len(m.messages.Items()), message)
-				m.messages.Select(len(m.messages.Items()) - 1)
-
 				m.input.SetValue("")
 			}
 		}

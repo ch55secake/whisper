@@ -12,7 +12,7 @@ var HeaderStyle = lipgloss.NewStyle().
 
 // MessageBoxStyle style for the box which contains the messages
 var MessageBoxStyle = lipgloss.NewStyle().
-	Padding(1, 2).
+	Padding(0, 0).
 	MarginTop(0).
 	Border(lipgloss.RoundedBorder()).
 	BorderForeground(lipgloss.Color("240"))

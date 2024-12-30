@@ -2,13 +2,11 @@ package client
 
 import (
 	"fmt"
-	"io"
-	"strings"
-
 	"github.com/charmbracelet/bubbles/list"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+	"io"
 )
 
 // model is the current model of the ui, all it contains is the input and the list of messages, alongside the base
@@ -47,7 +45,7 @@ type messageItemDelegate struct{}
 func (d messageItemDelegate) Height() int                             { return 1 }
 func (d messageItemDelegate) Spacing() int                            { return 0 }
 func (d messageItemDelegate) Update(_ tea.Msg, _ *list.Model) tea.Cmd { return nil }
-func (d messageItemDelegate) Render(w io.Writer, m list.Model, index int, listItem list.Item) {
+func (d messageItemDelegate) Render(w io.Writer, m list.Model, _ int, listItem list.Item) {
 	i, ok := listItem.(Message)
 	if !ok {
 		return
@@ -55,18 +53,18 @@ func (d messageItemDelegate) Render(w io.Writer, m list.Model, index int, listIt
 
 	head := lipgloss.NewStyle().Bold(true).Render(i.from)
 
+	tail := lipgloss.NewStyle().Bold(true).Render(i.at)
+
 	var str string
 
-	str = fmt.Sprintf("%s: %s - %s", head, i.content, i.at)
-
-	fn := ItemStyle.Render
-	if index == m.Index() {
-		fn = func(s ...string) string {
-			return SelectedItemStyle.Render(strings.Join(s, " "))
+	for j := range m.VisibleItems() {
+		item := m.VisibleItems()[j].(Message)
+		str = fmt.Sprintf("%s: %s - %s", head, item.content, tail)
+		_, err := fmt.Fprint(w, SelectedItemStyle.Render(str)+"\n")
+		if err != nil {
+			return
 		}
 	}
-
-	fmt.Fprint(w, fn(str))
 }
 
 // Init create the model and return the relevant tea cmd, also sets the window title and ticks for the time
