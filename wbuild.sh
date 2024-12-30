@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
-# Watch changes, kill the process and then rebuild
+# Watch changes, call the other script to kill and rebuild the client 
 fswatch -o ~/Projects/whisper/client/ | xargs -n1 -I{} ./kbuild.sh
