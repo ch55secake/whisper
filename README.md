@@ -4,7 +4,7 @@
 
 ## Developing locally 
 
-> [!IMPORTANT] In order for the below-mentioned `wbuild` script, you need to have `fswatch` installed. You can get this by running: 
+> Note: In order for the below-mentioned `wbuild` script, you need to have `fswatch` installed. You can get this by running: 
 > `brew install fswatch`. If on Linux, you can replace the `fswatch` part of the script with, `inotifywait -e attrib $(find . -name '*.go')`, 
 > although this is not something that I tested myself. So it's not guaranteed to work. 
 
