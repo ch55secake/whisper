@@ -7,7 +7,6 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"io"
-	//"log"
 )
 
 // model is the current model of the ui, all it contains is the input and the list of messages, alongside the base
