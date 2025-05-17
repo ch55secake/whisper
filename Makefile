@@ -16,3 +16,5 @@ run_server:
 	./cmd/server/_build/whisper-server
 
 all: clean client server
+
+.PHONY: client server clean run_client run_server
