@@ -6,7 +6,7 @@ import (
 )
 
 func (m model) View() string {
-	currentTime := time.Now().Format("03:04:05 PM")
+	currentTime := time.Now().Format("15:04:05")
 	title := " whisper "
 	clock := currentTime
 

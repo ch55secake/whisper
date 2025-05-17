@@ -20,7 +20,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if input != "" {
 				message := Message{
 					from:    m.username,
-					at:      time.Now().Format("15:04 PM"),
+					at:      time.Now().Format("15:04"),
 					content: input,
 				}
 
