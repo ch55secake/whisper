@@ -11,14 +11,10 @@ func (m model) View() string {
 	clock := currentTime
 
 	//available width for the header content
-	headerContent := lipgloss.PlaceHorizontal(
-		m.width,
-		lipgloss.Left,
-		title,
-	)[:len(title)] + lipgloss.PlaceHorizontal(
-		m.width-len(title),
-		lipgloss.Right,
-		clock,
+	headerContent := lipgloss.JoinHorizontal(
+		lipgloss.Top,
+		lipgloss.PlaceHorizontal(len(title), lipgloss.Left, title),
+		lipgloss.PlaceHorizontal(m.width-len(title), lipgloss.Right, clock),
 	)
 
 	header := HeaderStyle.Width(m.width).Render(headerContent)
