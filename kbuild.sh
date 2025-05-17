@@ -2,5 +2,4 @@
 
 # Kill, rebuild and run
 kill $(ps -e | grep _build/whisper | awk '{print $1}'| head -n 1)
-go build -o _build/ && cd _build/ && ./whisper
-
+go build -o "$(pwd)/_build/" && cd "$(pwd)/_build/" && ./whisper
