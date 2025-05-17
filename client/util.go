@@ -31,7 +31,7 @@ func StartClient() {
 	m := model{
 		input:    input,
 		messages: messagelist,
-		username: "skibidi",
+		username: "user",
 	}
 
 	p := tea.NewProgram(m, tea.WithAltScreen())

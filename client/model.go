@@ -51,19 +51,19 @@ func (d messageItemDelegate) Render(w io.Writer, m list.Model, _ int, listItem l
 		return
 	}
 
-	head := lipgloss.NewStyle().Bold(true).Render(i.from)
+	username := lipgloss.NewStyle().Bold(true).Render(i.from)
 
-	tail := lipgloss.NewStyle().Bold(true).Render(i.at)
+	timeSent := lipgloss.NewStyle().Bold(true).Render(i.at)
 
 	var str string
-
 	for j := range m.VisibleItems() {
 		item := m.VisibleItems()[j].(Message)
-		str = fmt.Sprintf("%s: %s - %s", head, item.content, tail)
+		str = fmt.Sprintf("%s %s\n%s", username, timeSent, item.content)
 		_, err := fmt.Fprint(w, SelectedItemStyle.Render(str)+"\n")
 		if err != nil {
 			return
 		}
+		//log.Print(item)
 	}
 }
 
