@@ -13,14 +13,14 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
-		case "ctrl+c", "ctrl+q":
+		case "ctrl+c", "ctrl+q", "disconnect":
 			return m, tea.Quit
 		case "enter":
 			input := strings.TrimSpace(m.input.Value())
 			if input != "" {
 				message := Message{
 					from:    m.username,
-					at:      time.Now().Format("15:04:05"),
+					at:      time.Now().Format("15:04 PM"),
 					content: input,
 				}
 
