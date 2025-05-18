@@ -1,5 +1,7 @@
-// Package server provides an entrypoint for the grpc server
-package server
+package main
 
-// listen for incoming connections
-//
+import "github.com/ch55secake/whisper/pkg/server"
+
+func main() {
+	server.StartServer()
+}
