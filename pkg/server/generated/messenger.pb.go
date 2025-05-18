@@ -4,7 +4,7 @@
 // 	protoc        v5.29.3
 // source: protos/messenger.proto
 
-package server
+package generated
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
