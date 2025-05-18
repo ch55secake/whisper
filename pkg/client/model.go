@@ -1,41 +1,47 @@
+// Package client is the logical responsible for creating the TUI
 package client
 
 import (
 	"fmt"
+	"io"
+
 	"github.com/charmbracelet/bubbles/list"
 	"github.com/charmbracelet/bubbles/textinput"
-	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"io"
+
+	tea "github.com/charmbracelet/bubbletea"
 )
 
 // model is the current model of the ui, all it contains is the input and the list of messages, alongside the base
 // height and width
 type model struct {
-	height      int
-	width       int
-	currentTime string
-	input       textinput.Model
-	messages    list.Model
-	username    string
+	height int
+	width  int
+	// currentTime string
+	input    textinput.Model
+	messages list.Model
+	username string
 }
 
 // Message is a struct which represents, who sent the message, if it has been seen and what it contains along with the actual content of the message
 type Message struct {
-	from    string
-	at      string
-	seen    bool
+	from string
+	at   string
+	// seen    bool
 	content string
 }
 
+// Title represents the person that sent the message/is the title of the list item
 func (item Message) Title() string {
 	return item.from
 }
 
+// Description represents the actual message content, or is a description of the list item
 func (item Message) Description() string {
 	return item.content
 }
 
+// FilterValue if the user wants to search for specific content of a message
 func (item Message) FilterValue() string {
 	return item.content
 }
@@ -63,7 +69,6 @@ func (d messageItemDelegate) Render(w io.Writer, m list.Model, _ int, listItem l
 		if err != nil {
 			return
 		}
-		//log.Print(item)
 	}
 }
 

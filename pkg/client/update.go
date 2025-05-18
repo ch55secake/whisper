@@ -1,10 +1,12 @@
 package client
 
 import (
-	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
 	"strings"
 	"time"
+
+	"github.com/charmbracelet/lipgloss"
+
+	tea "github.com/charmbracelet/bubbletea"
 )
 
 // Update function to handle messages and commands

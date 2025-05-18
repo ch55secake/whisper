@@ -1,8 +1,9 @@
 package client
 
 import (
-	"github.com/charmbracelet/lipgloss"
 	"time"
+
+	"github.com/charmbracelet/lipgloss"
 )
 
 func (m model) View() string {
@@ -10,7 +11,7 @@ func (m model) View() string {
 	title := " whisper "
 	clock := currentTime
 
-	//available width for the header content
+	// available width for the header content
 	headerContent := lipgloss.JoinHorizontal(
 		lipgloss.Top,
 		lipgloss.PlaceHorizontal(len(title), lipgloss.Left, title),
