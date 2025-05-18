@@ -6,15 +6,18 @@ client:
 server:
 	go build -o cmd/server/${BUILD_DIRECTORY}/whisper-server ./cmd/server
 
-clean:
-	rm -rf cmd/client/${BUILD_DIRECTORY} && rm -rf cmd/server/${BUILD_DIRECTORY}
+clean-client:
+	rm -rf cmd/client/${BUILD_DIRECTORY}
 
-run_client:
+clean-server:
+	rm -rf cmd/server/${BUILD_DIRECTORY}
+
+run-client:
 	go run ./cmd/client/main.go
 
-run_server:
-	./cmd/server/_build/whisper-server
+run-server:
+	go run ./cmd/server/main.go
 
-all: clean client server
+all: clean-client client clean-server server
 
-.PHONY: client server clean run_client run_server
+.PHONY: client server clean run-client run-server

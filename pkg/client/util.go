@@ -1,11 +1,13 @@
 package client
 
 import (
+	"log"
+
 	"github.com/charmbracelet/bubbles/list"
 	"github.com/charmbracelet/bubbles/textinput"
-	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"log"
+
+	tea "github.com/charmbracelet/bubbletea"
 )
 
 // StartClient starts the client and initializes the model, will most likely have to move this

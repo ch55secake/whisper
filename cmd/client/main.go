@@ -1,3 +1,4 @@
+// Package main provides an entrypoint for the client TUI
 package main
 
 import "github.com/ch55secake/whisper/pkg/client"
