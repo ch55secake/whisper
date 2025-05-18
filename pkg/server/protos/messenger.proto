@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+package whisperserver;
+
+option go_package = "github.com/ch55secake/whisper/pkg/server";
+
+// Represents a user/peer in the network
+message Peer {
+  string id = 1;
+  string username = 2;
+}
+
+// A chat message from one peer to another
+message ChatMessage {
+  string message_id = 1;
+  Peer sender = 2;
+  Peer receiver = 3;
+  string content = 4;
+  int64 timestamp = 5;
+}
+
+// Message acknowledgment
+message Ack {
+  string message_id = 1;
+  Peer receiver = 2;
+  int64 timestamp = 3;
+}
+
+// Status updates: online, offline, away, etc.
+message StatusUpdate {
+  Peer peer = 1;
+  enum Status {
+    UNKNOWN = 0;
+    ONLINE = 1;
+    OFFLINE = 2;
+    AWAY = 3;
+  }
+  Status status = 2;
+  int64 timestamp = 3;
+}
+
+// A wrapper for all types of messages sent in the stream
+message Envelope {
+  oneof payload {
+    ChatMessage chat_message = 1;
+    Ack ack = 2;
+    StatusUpdate status_update = 3;
+  }
+}
+
+// Empty request/response message
+message Empty {}
+
+service Messenger {
+
+  rpc Chat(stream Envelope) returns (stream Envelope);
+
+  rpc SendMessage(ChatMessage) returns (Ack);
+
+  rpc UpdateStatus(StatusUpdate) returns (Empty);
+
+  rpc Ping(Peer) returns (StatusUpdate);
+}
