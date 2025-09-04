@@ -18,25 +18,22 @@ func connect(serverAddr string) (*grpc.ClientConn, error) {
 	if err != nil {
 		log.Fatalf("Failed to connect to server: %v", err)
 	}
-	defer func(connection *grpc.ClientConn) {
-		err := connection.Close()
-		if err != nil {
-			log.Fatalf("Failed to close connection: %v", err)
-		}
-	}(connection)
-	return connection, err
+
+	return connection, nil
 }
 
+// Dont use this
 // SendMessage provides utility to be able to send a message from the chat client to the grpc server
 func SendMessage(msg Message, serverAddr string) error {
 	connection, err := connect(serverAddr)
 	if err != nil {
 		return nil
 	}
+	defer connection.Close()
 
 	client := messenger.NewMessengerClient(connection)
 
-	ack, err := client.SendMessage(context.Background(), &messenger.ChatMessage{
+	_, err = client.SendMessage(context.Background(), &messenger.ChatMessage{
 		MessageId: uuid.NewString(),
 		Sender: &messenger.Peer{
 			Id:       uuid.NewString(),
@@ -53,6 +50,6 @@ func SendMessage(msg Message, serverAddr string) error {
 		log.Fatalf("failed to send message to server: %v", err)
 	}
 
-	log.Printf("Ack received: %+v", ack)
+	// log.Printf("Ack received: %+v", ack)
 	return nil
 }
