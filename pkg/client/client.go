@@ -50,6 +50,5 @@ func SendMessage(msg Message, serverAddr string) error {
 		log.Fatalf("failed to send message to server: %v", err)
 	}
 
-	// log.Printf("Ack received: %+v", ack)
 	return nil
 }
