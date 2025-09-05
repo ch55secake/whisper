@@ -6,6 +6,8 @@ import (
 
 	"github.com/charmbracelet/lipgloss"
 
+	"log"
+
 	tea "github.com/charmbracelet/bubbletea"
 )
 
@@ -24,6 +26,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					at:      time.Now().Format("15:04"),
 					content: input,
 				}
+
+				m.SendMessage(message)
+
 				m.messages.InsertItem(len(m.messages.Items()), message)
 				m.input.SetValue("")
 				if input == "disconnect" {
@@ -38,6 +43,24 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.height = msg.Height - h
 		m.width = msg.Width - v
 
+	case GRPCMessage:
+		// log.Printf("Envelope payload: %v", msg.Envelope)
+
+		if msg.Err != nil {
+			log.Printf("grpc error: %v", msg.Err)
+			return m, nil
+		}
+
+		cm := msg.Envelope.GetChatMessage()
+		if cm != nil {
+			message := Message{
+				from:    cm.Sender.Username,
+				content: cm.Content,
+			}
+			m.messages.InsertItem(len(m.messages.Items()), message)
+		}
+
+		return m, startChatListener(m.stream)
 	}
 
 	var cmd tea.Cmd
