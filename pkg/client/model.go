@@ -3,17 +3,21 @@ package client
 
 import (
 	"fmt"
-	"io"
 	"time"
 
-	"github.com/charmbracelet/bubbles/list"
 	"github.com/charmbracelet/bubbles/textinput"
-	"github.com/charmbracelet/lipgloss"
-
+	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/google/uuid"
 
 	messenger "github.com/ch55secake/whisper/pkg/server/generated"
+)
+
+type phase int
+
+const (
+	login phase = iota
+	chat
 )
 
 // model is the current model of the ui, all it contains is the input and the list of messages, alongside the base
@@ -22,8 +26,10 @@ type model struct {
 	height      int
 	width       int
 	currentTime string
+	phase       phase
 	input       textinput.Model
-	messages    list.Model
+	viewport    viewport.Model
+	messages    []Message
 	username    string
 	client      messenger.MessengerClient
 	stream      messenger.Messenger_ChatClient
@@ -31,51 +37,11 @@ type model struct {
 
 // Message is a struct which represents, who sent the message, if it has been seen and what it contains along with the actual content of the message
 type Message struct {
-	from string
-	at   string
-	// seen    bool
+	from    string
+	at      string
+	seen    bool
 	content string
-}
-
-// Title represents the person that sent the message/is the title of the list item
-func (item Message) Title() string {
-	return item.from
-}
-
-// Description represents the actual message content, or is a description of the list item
-func (item Message) Description() string {
-	return item.content
-}
-
-// FilterValue if the user wants to search for specific content of a message
-func (item Message) FilterValue() string {
-	return item.content
-}
-
-type messageItemDelegate struct{}
-
-func (d messageItemDelegate) Height() int                             { return 1 }
-func (d messageItemDelegate) Spacing() int                            { return 0 }
-func (d messageItemDelegate) Update(_ tea.Msg, _ *list.Model) tea.Cmd { return nil }
-func (d messageItemDelegate) Render(w io.Writer, m list.Model, _ int, listItem list.Item) {
-	i, ok := listItem.(Message)
-	if !ok {
-		return
-	}
-
-	username := lipgloss.NewStyle().Bold(true).Render(i.from)
-
-	timeSent := lipgloss.NewStyle().Bold(true).Render(i.at)
-
-	var str string
-	for j := range m.VisibleItems() {
-		item := m.VisibleItems()[j].(Message)
-		str = fmt.Sprintf("%s %s\n%s", username, timeSent, item.content)
-		_, err := fmt.Fprint(w, SelectedItemStyle.Render(str)+"\n")
-		if err != nil {
-			return
-		}
-	}
+	mine    bool
 }
 
 type GRPCMessage struct {
