@@ -4,10 +4,7 @@ import (
 	"context"
 	"log"
 
-	"github.com/charmbracelet/bubbles/list"
 	"github.com/charmbracelet/bubbles/textinput"
-	"github.com/charmbracelet/lipgloss"
-
 	tea "github.com/charmbracelet/bubbletea"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -22,18 +19,6 @@ func StartClient() {
 	input.Prompt = "> "
 	input.Focus()
 	input.CharLimit = 256
-
-	messagelist := list.New([]list.Item{}, messageItemDelegate{}, 0, 0)
-	messagelist.Styles = list.Styles{
-		NoItems: lipgloss.NewStyle().PaddingLeft(2).PaddingTop(2).Faint(true),
-	}
-
-	messagelist.SetShowHelp(false)
-	messagelist.SetShowTitle(false)
-	messagelist.SetShowStatusBar(false)
-	messagelist.SetShowFilter(false)
-	// this is the reason that the count of messages shows up, don't want this enabled
-	messagelist.SetShowPagination(false)
 
 	conn, err := grpc.NewClient("localhost:41002", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
@@ -51,10 +36,10 @@ func StartClient() {
 
 	m := model{
 		input:    input,
-		messages: messagelist,
-		username: "user",
+		messages: []Message{},
 		client:   client,
 		stream:   stream,
+		phase:    login,
 	}
 
 	p := tea.NewProgram(m, tea.WithAltScreen())

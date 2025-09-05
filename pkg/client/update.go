@@ -19,20 +19,33 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "ctrl+c", "ctrl+q":
 			return m, tea.Quit
 		case "enter":
+
 			input := strings.TrimSpace(m.input.Value())
-			if input != "" {
-				message := Message{
-					from:    m.username,
-					at:      time.Now().Format("15:04"),
-					content: input,
-				}
+			if input == "" {
+				break
+			}
 
-				m.SendMessage(message)
-
-				m.messages.InsertItem(len(m.messages.Items()), message)
+			switch m.phase {
+			case login:
+				m.username = input
+				m.phase = chat
 				m.input.SetValue("")
-				if input == "disconnect" {
-					return m, tea.Quit
+			case chat:
+				if input != "" {
+					message := Message{
+						from:    m.username,
+						at:      time.Now().Format("15:04"),
+						content: input,
+						mine:    true,
+					}
+
+					m.SendMessage(message)
+
+					m.messages = append(m.messages, message)
+					m.input.SetValue("")
+					if input == "disconnect" {
+						return m, tea.Quit
+					}
 				}
 			}
 		}
@@ -44,8 +57,6 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.width = msg.Width - v
 
 	case GRPCMessage:
-		// log.Printf("Envelope payload: %v", msg.Envelope)
-
 		if msg.Err != nil {
 			log.Printf("grpc error: %v", msg.Err)
 			return m, nil
@@ -53,15 +64,23 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		cm := msg.Envelope.GetChatMessage()
 		if cm != nil {
+			timestamp := cm.GetTimestamp()
+			t := time.Unix(timestamp, 0)
+			timeFormatted := t.Format("15:04")
 			message := Message{
 				from:    cm.Sender.Username,
 				content: cm.Content,
+				at:      timeFormatted,
 			}
-			m.messages.InsertItem(len(m.messages.Items()), message)
+			if message.from != m.username {
+				m.messages = append(m.messages, message)
+			}
 		}
 
 		return m, startChatListener(m.stream)
 	}
+
+	m.viewport, _ = m.viewport.Update(msg)
 
 	var cmd tea.Cmd
 	m.input, cmd = m.input.Update(msg)
