@@ -77,7 +77,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		}
 
-		return m, startChatListener(m.stream)
+		return m, StartChatListener(m.stream)
 	}
 
 	m.viewport, _ = m.viewport.Update(msg)

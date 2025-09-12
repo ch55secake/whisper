@@ -7,9 +7,40 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
+var loginScreenAscii = `
+  __      __.__    .__
+ /  \    /  \  |__ |__| ____________   ___________
+ \   \/\/   /  |  \|  |/  ___/\____ \_/ __ \_  __ \
+  \        /|   Y  \  |\___ \ |  |_> >  ___/|  | \/
+   \__/\  / |___|  /__/____  >|   __/ \___  >__|
+        \/       \/        \/ |__|        \/
+`
+
 func (m model) View() string {
 	if m.phase == login {
-		return "Enter your username:\n\n" + m.input.View()
+		loginInputBox := loginBoxStyle.
+			UnsetAlign().
+			Align(lipgloss.Center).
+			Width(m.width).
+			Render("Enter a username:\n\n" + m.input.View())
+
+		loginContent := lipgloss.JoinVertical(
+			lipgloss.Center,
+			lipgloss.NewStyle().
+				Align(lipgloss.Top).
+				Align(lipgloss.Left).
+				Border(lipgloss.RoundedBorder()).
+				Render(loginScreenAscii),
+			loginInputBox,
+		)
+
+		return lipgloss.Place(
+			m.width,
+			m.height,
+			lipgloss.Center,
+			lipgloss.Center,
+			loginContent,
+		)
 	}
 
 	currentTime := time.Now().Format("15:04:05")

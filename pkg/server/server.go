@@ -16,6 +16,7 @@ type server struct {
 	clients map[messenger.Messenger_ChatServer]struct{}
 }
 
+// SendMessage will send an ack to the server
 func (s *server) SendMessage(ctx context.Context, msg *messenger.ChatMessage) (*messenger.Ack, error) {
 	log.Printf("Received message from %s: %s", msg.GetSender().GetUsername(), msg.GetContent())
 	return &messenger.Ack{
