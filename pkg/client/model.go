@@ -16,6 +16,7 @@ const (
 	chat
 )
 
+// TODO add an error log that can be updated the same way as the messages are and also a status log for when that is added
 // model is the current model of the ui, all it contains is the input and the list of messages, alongside the base
 // height and width
 type model struct {

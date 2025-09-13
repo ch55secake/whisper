@@ -7,7 +7,7 @@ var HeaderStyle = lipgloss.NewStyle().
 	Padding(0, 0).
 	MarginTop(0).
 	Border(lipgloss.RoundedBorder()).
-	BorderForeground(lipgloss.Color("#FF69B4")).
+	BorderForeground(lipgloss.Color("white")).
 	Bold(true)
 
 // MessageBoxStyle style for the box which contains the messages
@@ -22,7 +22,7 @@ var InputBoxStyle = lipgloss.NewStyle().
 	Padding(0, 2).
 	MarginTop(0).
 	Border(lipgloss.RoundedBorder()).
-	BorderForeground(lipgloss.Color("#00FFFF"))
+	BorderForeground(lipgloss.Color("white"))
 
 var loginBoxStyle = lipgloss.NewStyle().
 	Padding(0, 2).

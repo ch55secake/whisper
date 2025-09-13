@@ -5,9 +5,10 @@ import (
 	"log"
 	"net"
 
+	"sync"
+
 	messenger "github.com/ch55secake/whisper/pkg/server/generated"
 	"google.golang.org/grpc"
-	"sync"
 )
 
 type server struct {
@@ -47,6 +48,7 @@ func (s *server) Chat(stream messenger.Messenger_ChatServer) error {
 
 	for {
 		env, err := stream.Recv()
+		log.Printf("Envelope pushed into the stream from: %v", env.GetChatMessage().Sender.GetUsername())
 		if err != nil {
 			return nil
 		}

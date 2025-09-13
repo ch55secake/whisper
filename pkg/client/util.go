@@ -13,7 +13,7 @@ import (
 // StartClient starts the client and initializes the model, will most likely have to move this
 func StartClient() {
 	input := textinput.New()
-	input.Prompt = ">> "
+	input.Prompt = ""
 	input.Focus()
 	input.CharLimit = 256
 
@@ -29,7 +29,7 @@ func StartClient() {
 
 	stream, err := client.Chat(context.Background())
 	if err != nil {
-		log.Fatalf("failed to open chat stream: %v", err)
+		log.Fatal("Unable to connect to server, are you sure that its running? Or that the address you provided is correct?")
 	}
 
 	m := model{

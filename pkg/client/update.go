@@ -1,12 +1,12 @@
 package client
 
 import (
+	"fmt"
+	"os"
 	"strings"
 	"time"
 
 	"github.com/charmbracelet/lipgloss"
-
-	"log"
 
 	tea "github.com/charmbracelet/bubbletea"
 )
@@ -58,8 +58,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	case GRPCMessage:
 		if msg.Err != nil {
-			log.Printf("grpc error: %v", msg.Err)
-			return m, nil
+			fmt.Fprintf(os.Stderr, "grpc error: %v\n", msg.Err)
+			return m, tea.Quit
 		}
 
 		cm := msg.Envelope.GetChatMessage()
