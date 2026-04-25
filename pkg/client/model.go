@@ -32,9 +32,9 @@ func (i menuItem) Title() string       { return i.title }
 func (i menuItem) Description() string { return i.desc }
 func (i menuItem) FilterValue() string { return i.title }
 
-// model is the current model of the ui, all it contains is the input and the list of messages, alongside the base
+// Model is the current Model of the ui, all it contains is the input and the list of messages, alongside the base
 // height and width
-type model struct {
+type Model struct {
 	height      int
 	width       int
 	currentTime string
@@ -74,7 +74,7 @@ func startChatListener(stream messenger.Messenger_ChatClient) tea.Cmd {
 	}
 }
 
-func (m *model) SendMessage(msg Message) error {
+func (m *Model) SendMessage(msg Message) error {
 	if m.stream == nil {
 		return fmt.Errorf("couldn't find stream available to send message")
 	}
@@ -100,7 +100,7 @@ func (m *model) SendMessage(msg Message) error {
 }
 
 // Init create the model and return the relevant tea cmd, also sets the window title and ticks for the time
-func (m model) Init() tea.Cmd {
+func (m Model) Init() tea.Cmd {
 	if m.stream == nil {
 		return tea.SetWindowTitle("whisper")
 	}

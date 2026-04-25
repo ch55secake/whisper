@@ -57,7 +57,7 @@ func StartClient() {
 		log.Fatalf("Failed to open chat stream: %v", err)
 	}
 
-	m := model{
+	m := Model{
 		input:    input,
 		menuList: buildMenuList(),
 		messages: []Message{},

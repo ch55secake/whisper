@@ -8,7 +8,7 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-func (m model) View() string {
+func (m Model) View() string {
 	if m.phase == menu {
 		title := MenuTitleStyle.Render("whisper")
 		listView := m.menuList.View()
