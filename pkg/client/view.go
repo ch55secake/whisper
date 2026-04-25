@@ -4,10 +4,11 @@ import (
 	"time"
 
 	"fmt"
+
 	"github.com/charmbracelet/lipgloss"
 )
 
-func (m model) View() string {
+func (m Model) View() string {
 	if m.phase == login {
 		return "Enter your username:\n\n" + m.input.View()
 	}
