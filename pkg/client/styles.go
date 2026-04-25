@@ -47,3 +47,25 @@ var MenuSelectedStyle = lipgloss.NewStyle().
 // MenuNormalStyle styles unselected menu items
 var MenuNormalStyle = lipgloss.NewStyle().
 	Foreground(lipgloss.Color("white"))
+
+// MenuHelpStyle styles the help hint pinned to the bottom of the menu box
+var MenuHelpStyle = lipgloss.NewStyle().
+	Foreground(lipgloss.Color("240")).
+	Italic(true)
+
+// LoginBoxStyle is the outer container for the login screen
+var LoginBoxStyle = lipgloss.NewStyle().
+	Padding(1, 4).
+	Border(lipgloss.RoundedBorder()).
+	BorderForeground(lipgloss.Color("#00FFFF"))
+
+// LoginPromptStyle styles the "Enter your username" label
+var LoginPromptStyle = lipgloss.NewStyle().
+	Foreground(lipgloss.Color("white")).
+	MarginBottom(1)
+
+// LoginHintStyle styles the small hint line at the bottom of the login box
+var LoginHintStyle = lipgloss.NewStyle().
+	Foreground(lipgloss.Color("240")).
+	Italic(true).
+	MarginTop(1)
