@@ -1,32 +1,46 @@
 package client
 
 import (
+	"log"
 	"strings"
 	"time"
 
 	"github.com/charmbracelet/lipgloss"
 
-	"log"
-
 	tea "github.com/charmbracelet/bubbletea"
 )
 
 // Update function to handle messages and commands
-func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "ctrl+c", "ctrl+q":
 			return m, tea.Quit
+		case "esc":
+			m.phase = menu
+			return m, nil
 		case "enter":
-
 			input := strings.TrimSpace(m.input.Value())
-			if input == "" {
-				break
-			}
 
 			switch m.phase {
+			case menu:
+				selected, ok := m.menuList.SelectedItem().(menuItem)
+				if !ok {
+					break
+				}
+				switch selected.title {
+				case "Connect":
+					m.phase = login
+					m.input.Focus()
+				case "Quit":
+					return m, tea.Quit
+				}
+				return m, nil
 			case login:
+				if input == "" {
+					break
+				}
 				m.username = input
 				m.phase = chat
 				m.input.SetValue("")
@@ -55,6 +69,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		h, v := docStyle.GetFrameSize()
 		m.height = msg.Height - h
 		m.width = msg.Width - v
+		m.menuList.SetSize(m.width/2, m.height/2)
 
 	case GRPCMessage:
 		if msg.Err != nil {
@@ -78,6 +93,12 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 
 		return m, startChatListener(m.stream)
+	}
+	
+	if m.phase == menu {
+		var cmd tea.Cmd
+		m.menuList, cmd = m.menuList.Update(msg)
+		return m, cmd
 	}
 
 	m.viewport, _ = m.viewport.Update(msg)

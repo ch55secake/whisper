@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 
+	"github.com/charmbracelet/bubbles/list"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"google.golang.org/grpc"
@@ -12,12 +13,34 @@ import (
 	messenger "github.com/ch55secake/whisper/pkg/server/generated"
 )
 
+// buildMenuList constructs the bubbles list used on the main menu screen.
+func buildMenuList() list.Model {
+	items := []list.Item{
+		menuItem{title: "Connect", desc: "Connect to the whisper server and start chatting"},
+		menuItem{title: "Quit", desc: "Exit whisper"},
+	}
+
+	delegate := list.NewDefaultDelegate()
+	delegate.Styles.SelectedTitle = MenuSelectedStyle
+	delegate.Styles.SelectedDesc = MenuNormalStyle.Faint(true)
+	delegate.Styles.NormalTitle = MenuNormalStyle
+	delegate.Styles.NormalDesc = MenuNormalStyle.Faint(true)
+
+	l := list.New(items, delegate, 40, 10)
+	l.Title = ""
+	l.SetShowTitle(false)
+	l.SetShowStatusBar(false)
+	l.SetFilteringEnabled(false)
+	l.SetShowHelp(true)
+
+	return l
+}
+
 // StartClient starts the client and initializes the model, will most likely have to move this
 // TODO: Move this code at some point
 func StartClient() {
 	input := textinput.New()
 	input.Prompt = "> "
-	input.Focus()
 	input.CharLimit = 256
 
 	conn, err := grpc.NewClient("localhost:41002", grpc.WithTransportCredentials(insecure.NewCredentials()))
@@ -34,12 +57,13 @@ func StartClient() {
 		log.Fatalf("Failed to open chat stream: %v", err)
 	}
 
-	m := model{
+	m := Model{
 		input:    input,
+		menuList: buildMenuList(),
 		messages: []Message{},
 		client:   client,
 		stream:   stream,
-		phase:    login,
+		phase:    menu,
 	}
 
 	p := tea.NewProgram(m, tea.WithAltScreen())

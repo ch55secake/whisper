@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/charmbracelet/bubbles/list"
 	"github.com/charmbracelet/bubbles/textinput"
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
@@ -16,17 +17,29 @@ import (
 type phase int
 
 const (
-	login phase = iota
+	menu phase = iota
+	login
 	chat
 )
 
-// model is the current model of the ui, all it contains is the input and the list of messages, alongside the base
+// menuItem is a selectable entry on the main menu.
+type menuItem struct {
+	title string
+	desc  string
+}
+
+func (i menuItem) Title() string       { return i.title }
+func (i menuItem) Description() string { return i.desc }
+func (i menuItem) FilterValue() string { return i.title }
+
+// Model is the current Model of the ui, all it contains is the input and the list of messages, alongside the base
 // height and width
-type model struct {
+type Model struct {
 	height      int
 	width       int
 	currentTime string
 	phase       phase
+	menuList    list.Model
 	input       textinput.Model
 	viewport    viewport.Model
 	messages    []Message
@@ -35,7 +48,7 @@ type model struct {
 	stream      messenger.Messenger_ChatClient
 }
 
-// Message is a struct which represents, who sent the message, if it has been seen and what it contains along with the actual content of the message
+// Message is a struct that represents who sent the message if it has been seen, and what it contains along with the actual content of the message
 type Message struct {
 	from    string
 	at      string
@@ -49,11 +62,10 @@ type GRPCMessage struct {
 	Err      error
 }
 
-// TODO Need to make use of this in the update.go and then configure the model to have the stream on it, should
-// also have the sendMessage method on the model
+// TODO Need to make use of this in the update.go and then configure the Model to have the stream on it, should
+// also have the sendMessage method on the Model
 func startChatListener(stream messenger.Messenger_ChatClient) tea.Cmd {
 	return func() tea.Msg {
-		// fmt.Print("waiting to receive.........")
 		env, err := stream.Recv()
 		if err != nil {
 			return GRPCMessage{Err: err}
@@ -62,9 +74,9 @@ func startChatListener(stream messenger.Messenger_ChatClient) tea.Cmd {
 	}
 }
 
-func (m *model) SendMessage(msg Message) error {
+func (m *Model) SendMessage(msg Message) error {
 	if m.stream == nil {
-		return fmt.Errorf("Couldn't find stream available to send message")
+		return fmt.Errorf("couldn't find stream available to send message")
 	}
 
 	env := &messenger.Envelope{
@@ -88,7 +100,10 @@ func (m *model) SendMessage(msg Message) error {
 }
 
 // Init create the model and return the relevant tea cmd, also sets the window title and ticks for the time
-func (m model) Init() tea.Cmd {
+func (m Model) Init() tea.Cmd {
+	if m.stream == nil {
+		return tea.SetWindowTitle("whisper")
+	}
 	return tea.Batch(
 		tea.SetWindowTitle("whisper"),
 		startChatListener(m.stream),

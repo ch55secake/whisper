@@ -4,12 +4,41 @@ import (
 	"time"
 
 	"fmt"
+
 	"github.com/charmbracelet/lipgloss"
 )
 
-func (m model) View() string {
+func (m Model) View() string {
+	if m.phase == menu {
+		const margin = 2
+		boxWidth := m.width - margin*2
+		boxHeight := m.height - margin*2
+
+		const frameV, frameH = 4, 6
+		innerWidth := boxWidth - frameH
+		innerHeight := boxHeight - frameV
+
+		title := MenuTitleStyle.Render("whisper")
+		help := MenuHelpStyle.Render("↑/↓ navigate  •  enter select  •  esc back")
+
+		listHeight := innerHeight - lipgloss.Height(title) - lipgloss.Height(help)
+		m.menuList.SetWidth(innerWidth)
+		m.menuList.SetHeight(listHeight)
+		m.menuList.SetShowHelp(false)
+
+		inner := lipgloss.JoinVertical(lipgloss.Left, title, m.menuList.View(), help)
+		box := MenuStyle.Width(boxWidth).Height(boxHeight).Render(inner)
+		return lipgloss.NewStyle().Margin(margin).Render(box)
+	}
+
 	if m.phase == login {
-		return "Enter your username:\n\n" + m.input.View()
+		title := MenuTitleStyle.Render("whisper")
+		prompt := LoginPromptStyle.Render("Enter your username")
+		hint := LoginHintStyle.Render("enter to confirm • esc to go back")
+		inner := lipgloss.JoinVertical(lipgloss.Left, prompt, m.input.View(), hint)
+		box := LoginBoxStyle.Render(inner)
+		content := lipgloss.JoinVertical(lipgloss.Center, title, box)
+		return lipgloss.Place(m.width, m.height, lipgloss.Center, lipgloss.Center, content)
 	}
 
 	currentTime := time.Now().Format("15:04:05")
