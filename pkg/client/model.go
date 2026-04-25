@@ -20,7 +20,7 @@ const (
 	chat
 )
 
-// model is the current model of the ui, all it contains is the input and the list of messages, alongside the base
+// this model is the current model of the ui, all it contains is the input and the list of messages, alongside the base
 // height and width
 type model struct {
 	height      int
@@ -35,7 +35,7 @@ type model struct {
 	stream      messenger.Messenger_ChatClient
 }
 
-// Message is a struct which represents, who sent the message, if it has been seen and what it contains along with the actual content of the message
+// Message is a struct that represents who sent the message if it has been seen, and what it contains along with the actual content of the message
 type Message struct {
 	from    string
 	at      string
@@ -53,7 +53,6 @@ type GRPCMessage struct {
 // also have the sendMessage method on the model
 func startChatListener(stream messenger.Messenger_ChatClient) tea.Cmd {
 	return func() tea.Msg {
-		// fmt.Print("waiting to receive.........")
 		env, err := stream.Recv()
 		if err != nil {
 			return GRPCMessage{Err: err}
@@ -64,7 +63,7 @@ func startChatListener(stream messenger.Messenger_ChatClient) tea.Cmd {
 
 func (m *model) SendMessage(msg Message) error {
 	if m.stream == nil {
-		return fmt.Errorf("Couldn't find stream available to send message")
+		return fmt.Errorf("couldn't find stream available to send message")
 	}
 
 	env := &messenger.Envelope{

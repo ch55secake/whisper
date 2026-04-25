@@ -13,7 +13,6 @@ import (
 )
 
 // StartClient starts the client and initializes the model, will most likely have to move this
-// TODO: Move this code at some point
 func StartClient() {
 	input := textinput.New()
 	input.Prompt = "> "

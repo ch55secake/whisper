@@ -5,18 +5,19 @@ import (
 	"log"
 	"net"
 
+	"sync"
+
 	messenger "github.com/ch55secake/whisper/pkg/server/generated"
 	"google.golang.org/grpc"
-	"sync"
 )
 
-type server struct {
+type Server struct {
 	messenger.UnimplementedMessengerServer
 	mu      sync.Mutex
 	clients map[messenger.Messenger_ChatServer]struct{}
 }
 
-func (s *server) SendMessage(ctx context.Context, msg *messenger.ChatMessage) (*messenger.Ack, error) {
+func (s *Server) SendMessage(_ context.Context, msg *messenger.ChatMessage) (*messenger.Ack, error) {
 	log.Printf("Received message from %s: %s", msg.GetSender().GetUsername(), msg.GetContent())
 	return &messenger.Ack{
 		MessageId: msg.GetMessageId(),
@@ -26,14 +27,14 @@ func (s *server) SendMessage(ctx context.Context, msg *messenger.ChatMessage) (*
 }
 
 // NewServer create a new server object to keep track of connected clients
-func NewServer() *server {
-	return &server{
+func NewServer() *Server {
+	return &Server{
 		clients: make(map[messenger.Messenger_ChatServer]struct{}),
 	}
 }
 
 // Chat register multiple chat clients and sync
-func (s *server) Chat(stream messenger.Messenger_ChatServer) error {
+func (s *Server) Chat(stream messenger.Messenger_ChatServer) error {
 	s.mu.Lock()
 	s.clients[stream] = struct{}{}
 	s.mu.Unlock()

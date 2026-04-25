@@ -24,17 +24,5 @@ var InputBoxStyle = lipgloss.NewStyle().
 	Border(lipgloss.RoundedBorder()).
 	BorderForeground(lipgloss.Color("#00FFFF"))
 
-// ItemStyle style for each message sent
-var ItemStyle = lipgloss.NewStyle().
-	MarginTop(1).
-	PaddingLeft(1).
-	Foreground(lipgloss.Color("#800080"))
-
-// SelectedItemStyle for each selected message, this controls the style of the message and user name
-// TODO: split the colour of username and messages
-var SelectedItemStyle = lipgloss.NewStyle().
-	PaddingLeft(1).
-	Foreground(lipgloss.Color("#800080"))
-
 var PinkStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#FF69B4"))
 var CyanStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#00FFFF"))
