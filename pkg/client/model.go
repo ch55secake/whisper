@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/charmbracelet/bubbles/list"
 	"github.com/charmbracelet/bubbles/textinput"
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
@@ -16,17 +17,29 @@ import (
 type phase int
 
 const (
-	login phase = iota
+	menu phase = iota
+	login
 	chat
 )
 
-// Model this Model is the current Model of the ui, all it contains is the input and the list of messages, alongside the base
+// menuItem is a selectable entry on the main menu.
+type menuItem struct {
+	title string
+	desc  string
+}
+
+func (i menuItem) Title() string       { return i.title }
+func (i menuItem) Description() string { return i.desc }
+func (i menuItem) FilterValue() string { return i.title }
+
+// model is the current model of the ui, all it contains is the input and the list of messages, alongside the base
 // height and width
-type Model struct {
+type model struct {
 	height      int
 	width       int
 	currentTime string
 	phase       phase
+	menuList    list.Model
 	input       textinput.Model
 	viewport    viewport.Model
 	messages    []Message
@@ -61,7 +74,7 @@ func startChatListener(stream messenger.Messenger_ChatClient) tea.Cmd {
 	}
 }
 
-func (m *Model) SendMessage(msg Message) error {
+func (m *model) SendMessage(msg Message) error {
 	if m.stream == nil {
 		return fmt.Errorf("couldn't find stream available to send message")
 	}
@@ -87,7 +100,10 @@ func (m *Model) SendMessage(msg Message) error {
 }
 
 // Init create the model and return the relevant tea cmd, also sets the window title and ticks for the time
-func (m Model) Init() tea.Cmd {
+func (m model) Init() tea.Cmd {
+	if m.stream == nil {
+		return tea.SetWindowTitle("whisper")
+	}
 	return tea.Batch(
 		tea.SetWindowTitle("whisper"),
 		startChatListener(m.stream),

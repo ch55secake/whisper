@@ -8,7 +8,15 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-func (m Model) View() string {
+func (m model) View() string {
+	if m.phase == menu {
+		title := MenuTitleStyle.Render("whisper")
+		listView := m.menuList.View()
+		inner := lipgloss.JoinVertical(lipgloss.Center, title, listView)
+		box := MenuStyle.Render(inner)
+		return lipgloss.Place(m.width, m.height, lipgloss.Center, lipgloss.Center, box)
+	}
+
 	if m.phase == login {
 		return "Enter your username:\n\n" + m.input.View()
 	}

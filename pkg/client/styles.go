@@ -26,3 +26,24 @@ var InputBoxStyle = lipgloss.NewStyle().
 
 var PinkStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#FF69B4"))
 var CyanStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#00FFFF"))
+
+// MenuStyle is the outer container for the main menu screen
+var MenuStyle = lipgloss.NewStyle().
+	Padding(1, 2).
+	Border(lipgloss.RoundedBorder()).
+	BorderForeground(lipgloss.Color("#FF69B4"))
+
+// MenuTitleStyle styles the large title shown above the menu list
+var MenuTitleStyle = lipgloss.NewStyle().
+	Bold(true).
+	Foreground(lipgloss.Color("#FF69B4")).
+	MarginBottom(1)
+
+// MenuSelectedStyle highlights the currently selected menu item
+var MenuSelectedStyle = lipgloss.NewStyle().
+	Foreground(lipgloss.Color("#00FFFF")).
+	Bold(true)
+
+// MenuNormalStyle styles unselected menu items
+var MenuNormalStyle = lipgloss.NewStyle().
+	Foreground(lipgloss.Color("white"))
