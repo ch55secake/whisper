@@ -53,14 +53,24 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 						mine:    true,
 					}
 
-					m.SendMessage(message)
+					err := m.SendMessage(message)
+					if err != nil {
+						return nil, nil
+					}
 
 					m.messages = append(m.messages, message)
+					m.viewport.SetContent(renderMessages(m.messages))
+					m.viewport.GotoBottom()
 					m.input.SetValue("")
 					if input == "disconnect" {
 						return m, tea.Quit
 					}
 				}
+			}
+
+		case "down", "pgdown", "end":
+			if m.phase == chat && m.viewport.AtBottom() {
+				m.unread = 0
 			}
 		}
 
@@ -70,12 +80,17 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.height = msg.Height - h
 		m.width = msg.Width - v
 		m.menuList.SetSize(m.width/2, m.height/2)
+		m.viewport.Width = m.width
+		m.viewport.Height = m.height - 9
 
 	case GRPCMessage:
 		if msg.Err != nil {
 			log.Printf("grpc error: %v", msg.Err)
+			m.connected = false
 			return m, nil
 		}
+
+		m.connected = true
 
 		cm := msg.Envelope.GetChatMessage()
 		if cm != nil {
@@ -88,13 +103,20 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				at:      timeFormatted,
 			}
 			if message.from != m.username {
+				atBottom := m.viewport.AtBottom()
 				m.messages = append(m.messages, message)
+				m.viewport.SetContent(renderMessages(m.messages))
+				if atBottom {
+					m.viewport.GotoBottom()
+				} else {
+					m.unread++
+				}
 			}
 		}
 
 		return m, startChatListener(m.stream)
 	}
-	
+
 	if m.phase == menu {
 		var cmd tea.Cmd
 		m.menuList, cmd = m.menuList.Update(msg)
@@ -102,6 +124,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	}
 
 	m.viewport, _ = m.viewport.Update(msg)
+	if m.viewport.AtBottom() {
+		m.unread = 0
+	}
 
 	var cmd tea.Cmd
 	m.input, cmd = m.input.Update(msg)

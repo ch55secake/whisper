@@ -42,6 +42,7 @@ func buildMenuList() list.Model {
 func StartClient() {
 	input := textinput.New()
 	input.Prompt = "> "
+	input.Placeholder = "Type a message…"
 	input.CharLimit = 256
 
 	serverAddr := config.ServerAddress()
@@ -50,12 +51,7 @@ func StartClient() {
 		log.Fatalf("failed to create grpc client: %v", err)
 	}
 
-	defer func(conn *grpc.ClientConn) {
-		err := conn.Close()
-		if err != nil {
-			log.Fatalf("failed to close grpc client: %v", err)
-		}
-	}(conn)
+	defer conn.Close()
 
 	client := messenger.NewMessengerClient(conn)
 
@@ -65,12 +61,14 @@ func StartClient() {
 	}
 
 	m := Model{
-		input:    input,
-		menuList: buildMenuList(),
-		messages: []Message{},
-		client:   client,
-		stream:   stream,
-		phase:    menu,
+		input:      input,
+		menuList:   buildMenuList(),
+		messages:   []Message{},
+		client:     client,
+		stream:     stream,
+		phase:      menu,
+		connected:  true,
+		serverAddr: serverAddr,
 	}
 
 	p := tea.NewProgram(m, tea.WithAltScreen())
