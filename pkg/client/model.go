@@ -39,11 +39,14 @@ type Model struct {
 	width       int
 	currentTime string
 	phase       phase
+	connected   bool
+	unread      int
 	menuList    list.Model
 	input       textinput.Model
 	viewport    viewport.Model
 	messages    []Message
 	username    string
+	serverAddr  string
 	client      messenger.MessengerClient
 	stream      messenger.Messenger_ChatClient
 }
