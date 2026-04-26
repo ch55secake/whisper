@@ -10,6 +10,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
+	"github.com/ch55secake/whisper/pkg/config"
 	messenger "github.com/ch55secake/whisper/pkg/server/generated"
 )
 
@@ -43,12 +44,18 @@ func StartClient() {
 	input.Prompt = "> "
 	input.CharLimit = 256
 
-	conn, err := grpc.NewClient("localhost:41002", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	serverAddr := config.ServerAddress()
+	conn, err := grpc.NewClient(serverAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("failed to create grpc client: %v", err)
 	}
 
-	defer conn.Close()
+	defer func(conn *grpc.ClientConn) {
+		err := conn.Close()
+		if err != nil {
+			log.Fatalf("failed to close grpc client: %v", err)
+		}
+	}(conn)
 
 	client := messenger.NewMessengerClient(conn)
 
