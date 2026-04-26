@@ -53,7 +53,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 						mine:    true,
 					}
 
-					m.SendMessage(message)
+					err := m.SendMessage(message)
+					if err != nil {
+						return nil, nil
+					}
 
 					m.messages = append(m.messages, message)
 					m.viewport.SetContent(renderMessages(m.messages))
